@@ -29,6 +29,8 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
     }
 
     companion object {
+        val rucciId = "81b9958f-fd21-404a-a979-9de0644271b1"
+
         fun fromJSON(inputStream: InputStream): FakeRepository {
             val mapper = jacksonMapperBuilder()
                 .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
@@ -69,7 +71,7 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
                     ]
                   },
                   {
-                    "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+                    "id": "$rucciId",
                     "title": "RUCCI",
                     "type": "QUEST",
                     "notes": "el próximo playthrough hay que ayudarlo",
@@ -84,6 +86,7 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
                       },
                       {
                         "type": "REQUIRED_IN",
+                        "falopa": true,
                         "entity": {
                           "id": "be703d97-0f80-427b-b321-67d9f2efbc48",
                           "title": "28",
@@ -117,9 +120,9 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
                       {
                         "type": "REQUIRES",
                         "entity": {
-                          "id": "a1174dfb-92bc-49ee-81a6-a4c546791655",
-                          "title": "42",
-                          "type": "LOCATION"
+                          "id": "1adb2749-7858-4c07-893c-312dc9cb8d88",
+                          "title": "SKERE",
+                          "type": "QUEST"
                         }
                       }
                     ]
@@ -133,7 +136,7 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
                       {
                         "type": "PROVIDES",
                         "entity": {
-                          "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+                          "id": "$rucciId",
                           "title": "RUCCI",
                           "type": "QUEST"
                         }
@@ -150,7 +153,7 @@ class FakeRepository(private val entities: List<EntityDetails>) : Repository {
                         "type": "REQUIRES",
                         "falopa": true,
                         "entity": {
-                          "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+                          "id": "$rucciId",
                           "title": "RUCCI",
                           "type": "QUEST"
                         }

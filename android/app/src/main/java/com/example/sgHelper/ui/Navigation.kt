@@ -7,11 +7,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.sgHelper.model.EntityId
 import com.example.sgHelper.model.EntityType
 import com.example.sgHelper.repository.FakeRepository
 import com.example.sgHelper.repository.Repository
 import com.example.sgHelper.ui.details.DetailsScreen
 import com.example.sgHelper.ui.search.SearchScreen
+
+fun buildDetailsScreenRoute(id: EntityId, type: EntityType): String {
+    return "details/${type.name.lowercase()}/${id}"
+}
 
 @Composable
 fun Navigation(repository: Repository) {

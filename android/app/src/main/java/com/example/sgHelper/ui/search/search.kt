@@ -2,6 +2,7 @@ package com.example.sgHelper.ui.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import com.example.sgHelper.model.EntityType
 import com.example.sgHelper.model.SearchResult
 import com.example.sgHelper.repository.FakeRepository
 import com.example.sgHelper.repository.Repository
+import com.example.sgHelper.ui.buildDetailsScreenRoute
 
 @Composable
 fun SearchScreen(
@@ -130,7 +132,10 @@ fun SearchList(
     repository: Repository,
     state: MutableState<TextFieldValue>
 ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         val query = state.value.text
         val results = repository.search(query)
         items(
@@ -142,7 +147,7 @@ fun SearchList(
                     onTap = { result ->
                         val entity = result.entity
 
-                        val route = "details/${entity.type.name.lowercase()}/${entity.id}"
+                        val route = buildDetailsScreenRoute(entity.id, entity.type)
 
                         navController.navigate(route) {
                             // Copied verbatim for the tutorial I'm following
@@ -205,7 +210,7 @@ fun SearchListItem(
             .fillMaxWidth()
             .padding(PaddingValues(8.dp, 16.dp))
     ) {
-        Column {
+        Column() {
             Text(
                 text = entity.title,
                 fontSize = 18.sp,
