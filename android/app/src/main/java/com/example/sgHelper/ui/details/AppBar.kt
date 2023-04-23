@@ -1,4 +1,4 @@
-package com.example.sgHelper
+package com.example.sgHelper.ui.details
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack

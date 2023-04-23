@@ -1,14 +1,10 @@
-package com.example.sgHelper
+package com.example.sgHelper.ui.search
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -37,93 +32,46 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.example.sgHelper.model.EntityDetails
+import com.example.sgHelper.model.EntitySummary
 import com.example.sgHelper.model.EntityType
-import com.example.sgHelper.repository.__TODO_remove_me
-import com.example.sgHelper.repository.anySearchResult
-import com.example.sgHelper.repository.loadFakeDataFromResourcesFile
-import com.example.sgHelper.repository.search
-import com.example.sgHelper.ui.theme.SleepingGodsHelperTheme
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        __TODO_remove_me.fakeData = loadFakeDataFromResourcesFile(resources.openRawResource(R.raw.fake_data_seed))
-
-        setContent {
-            SleepingGodsHelperTheme() {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Navigation()
-                }
-            }
-        }
-    }
-}
+import com.example.sgHelper.model.SearchResult
+import com.example.sgHelper.repository.FakeRepository
+import com.example.sgHelper.repository.Repository
 
 @Composable
-fun MainScreen(navController: NavController) {
+fun SearchScreen(
+    navController: NavController,
+    repository: Repository,
+) {
     val queryState = remember { mutableStateOf(TextFieldValue("")) }
     Column {
         SearchView(state = queryState)
-        SearchList(navController = navController, state = queryState)
+        SearchList(
+            navController = navController,
+            repository = repository,
+            state = queryState,
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+fun SearchScreenPreview() {
     val navController = rememberNavController()
-    MainScreen(navController = navController)
-}
+    val repository = FakeRepository(
+        entities = listOf(
+            EntityDetails(id = "123", title = "A", type = EntityType.QUEST),
+            EntityDetails(id = "234", title = "B", type = EntityType.QUEST),
+            EntityDetails(id = "345", title = "1", type = EntityType.LOCATION),
+        )
+    )
 
-@Composable
-fun Navigation() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") {
-            MainScreen(navController = navController)
-        }
-        composable(
-            "details/{type}/{id}",
-            arguments = listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                },
-                navArgument("id") {
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            // TODO: Error handling
-            // TODO: Also nesting
-
-            backStackEntry.arguments?.getString("type")?.let { typeString ->
-                // TODO: I'm sure that EnumType is great, but I don't want to learn it
-                EntityType.fromString(typeString)?.let { type ->
-                    backStackEntry.arguments?.getString("id")?.let { id ->
-                        DetailsScreen(
-                            navController = navController,
-                            id = id,
-                            type = type
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NavigationPreview() {
-    // TODO: This broke with the move to a json file in res/
-    Navigation()
+    SearchScreen(
+        navController = navController,
+        repository = repository
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -177,22 +125,25 @@ fun SearchViewPreview() {
 }
 
 @Composable
-fun SearchList(navController: NavController, state: MutableState<TextFieldValue>) {
+fun SearchList(
+    navController: NavController,
+    repository: Repository,
+    state: MutableState<TextFieldValue>
+) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         val query = state.value.text
-        val results = search(query)
+        val results = repository.search(query)
         items(
             count = results.size,
-            key = { i -> results[i].id },
+            key = { i -> results[i].entity.id },
             itemContent = { i ->
-                val result = results[i]
-
                 SearchListItem(
-                    result = result,
-                    onTap = { id, type ->
-                        println("id = $id")
-                        val route = "details/${type.name.lowercase()}/$id"
-                        println(route)
+                    result = results[i],
+                    onTap = { result ->
+                        val entity = result.entity
+
+                        val route = "details/${entity.type.name.lowercase()}/${entity.id}"
+
                         navController.navigate(route) {
                             // Copied verbatim for the tutorial I'm following
                             // https://johncodeos.com/how-to-add-search-in-list-with-jetpack-compose/
@@ -224,32 +175,45 @@ fun SearchList(navController: NavController, state: MutableState<TextFieldValue>
 fun SearchListPreview() {
     val navController = rememberNavController()
     val queryState = remember { mutableStateOf(TextFieldValue("")) }
+    val repository = FakeRepository(
+        entities = listOf(
+            EntityDetails(id = "123", title = "A", type = EntityType.QUEST),
+            EntityDetails(id = "234", title = "B", type = EntityType.QUEST),
+            EntityDetails(id = "345", title = "1", type = EntityType.LOCATION),
+        )
+    )
 
-    SearchList(navController = navController, state = queryState)
+    SearchList(
+        navController = navController,
+        state = queryState,
+        repository = repository
+    )
 }
 
 @Composable
-fun SearchListItem(result: com.example.sgHelper.model.SearchResult, onTap: (id: String, type: EntityType) -> Unit) {
+fun SearchListItem(
+    result: SearchResult,
+    onTap: (SearchResult) -> Unit
+) {
+    val entity = result.entity
+
     Row(
-       modifier = Modifier
-           .clickable {
-               println("result = $result")
-               onTap(result.id, result.type)
-           }
-           .background(MaterialTheme.colorScheme.primaryContainer)
-           .height(80.dp)
-           .fillMaxWidth()
-           .padding(PaddingValues(8.dp, 16.dp))
+        modifier = Modifier
+            .clickable { onTap(result) }
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .height(80.dp)
+            .fillMaxWidth()
+            .padding(PaddingValues(8.dp, 16.dp))
     ) {
         Column {
             Text(
-                text = result.title,
+                text = entity.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = result.type.name.uppercase(),
+                text = entity.type.name.uppercase(),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.primary
@@ -261,5 +225,8 @@ fun SearchListItem(result: com.example.sgHelper.model.SearchResult, onTap: (id: 
 @Preview(showBackground = true)
 @Composable
 fun ListItemPreview() {
-    SearchListItem(result = anySearchResult(), onTap = { _, _ -> })
+    SearchListItem(
+        result = SearchResult(entity = EntitySummary(id = "123", title = "DOVE", type = EntityType.QUEST)),
+        onTap = { _ -> },
+    )
 }

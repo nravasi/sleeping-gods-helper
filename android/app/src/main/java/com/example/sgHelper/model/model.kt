@@ -2,10 +2,19 @@ package com.example.sgHelper.model
 
 typealias EntityId = String
 
-data class SearchResult(
+data class EntitySummary(
     val id: EntityId,
     val title: String,
     val type: EntityType
+)
+
+data class SearchState(
+    val results: List<SearchResult> = listOf(),
+    val query: String = "",
+)
+
+data class SearchResult(
+    val entity: EntitySummary
 )
 
 enum class EntityType {
@@ -27,17 +36,19 @@ data class EntityDetails(
     val title: String,
     val type: EntityType,
     val notes: String = "",
-    // Maybe use a sealed hierarchy for this? this is clearly two different classes but I'm lazy
-    val foundAt: EntityDetailsReference? = null,
-    val requiredIn: List<EntityDetailsReference> = listOf(),
-    val provides: List<EntityDetailsReference> = listOf(),
-    val requires: List<EntityDetailsReference> = listOf()
+    val relationships: List<EntityRelationship> = listOf(),
 )
 
-data class EntityDetailsReference(
-    val id: EntityId,
-    val type: EntityType,
-    val title: String,
+enum class RelationshipType {
+    FOUND_AT,
+    REQUIRED_IN,
+    PROVIDES,
+    REQUIRES;
+}
+
+data class EntityRelationship(
+    val type: RelationshipType,
+    val entity: EntitySummary,
     // no se si pensamos hacerlo open source :P
     val falopa: Boolean = false
 )
