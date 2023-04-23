@@ -1,0 +1,98 @@
+[
+  {
+    "id": "1adb2749-7858-4c07-893c-312dc9cb8d88",
+    "title": "SKERE",
+    "type": "QUEST",
+    "notes": "texto con emojis\uD83E\uDDC9",
+    "found_at": {
+      "id": "6010e24e-9c35-4330-933d-b4c15bef573b",
+      "title": "2",
+      "type": "LOCATION"
+    },
+    "required_in": [
+      {
+        "id": "a1174dfb-92bc-49ee-81a6-a4c546791655",
+        "title": "42",
+        "type": "LOCATION"
+      }
+    ]
+  },
+  {
+    "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+    "title": "RUCCI",
+    "type": "QUEST",
+    "notes": "el próximo playthrough hay que ayudarlo",
+    "found_at": {
+      "id": "13be5e56-f629-4ae5-84e0-a323b9e5331f",
+      "title": "19",
+      "type": "LOCATION"
+    },
+    "required_in": [
+      {
+        "id": "be703d97-0f80-427b-b321-67d9f2efbc48",
+        "title": "28",
+        "type": "LOCATION",
+        "falopa": true
+      }
+    ]
+  },
+  {
+    "id": "6010e24e-9c35-4330-933d-b4c15bef573b",
+    "title": "2",
+    "type": "LOCATION",
+    "notes": "",
+    "provides": [
+      {
+        "id": "1adb2749-7858-4c07-893c-312dc9cb8d88",
+        "title": "SKERE",
+        "type": "QUEST"
+      }
+    ],
+    "requires": []
+  },
+  {
+    "id": "a1174dfb-92bc-49ee-81a6-a4c546791655",
+    "title": "42",
+    "type": "LOCATION",
+    "notes": "the answer",
+    "provides": [],
+    "requires": [
+      {
+        "id": "a1174dfb-92bc-49ee-81a6-a4c546791655",
+        "title": "42",
+        "type": "LOCATION",
+        "falopa": true
+      }
+    ]
+  },
+  {
+    "id": "13be5e56-f629-4ae5-84e0-a323b9e5331f",
+    "title": "19",
+    "type": "LOCATION",
+    "notes": "",
+    "provides": [
+      {
+        "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+        "title": "RUCCI",
+        "type": "QUEST"
+      }
+    ],
+    "requires": []
+  },
+  {
+    "id": "be703d97-0f80-427b-b321-67d9f2efbc48",
+    "title": "28",
+    "type": "LOCATION",
+    "notes": "el barrio de Flores, estoy seguro de que no va a pasar nada malo",
+    "found_at": null,
+    "provides": [],
+    "requires": [
+      {
+        "id": "81b9958f-fd21-404a-a979-9de0644271b1",
+        "title": "RUCCI",
+        "type": "QUEST",
+        "falopa": true
+      }
+    ]
+  }
+]
