@@ -3,6 +3,7 @@ package com.example.sgHelper.ui.search
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,13 +50,18 @@ fun SearchScreen(
     repository: Repository,
 ) {
     val queryState = remember { mutableStateOf(TextFieldValue("")) }
-    Column {
-        SearchView(state = queryState)
-        SearchList(
-            navController = navController,
-            repository = repository,
-            state = queryState,
-        )
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        modifier = Modifier.fillMaxHeight(),
+    ) {
+        Column {
+            SearchView(state = queryState)
+            SearchList(
+                navController = navController,
+                repository = repository,
+                state = queryState,
+            )
+        }
     }
 }
 
@@ -80,44 +86,53 @@ fun SearchScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchView(state: MutableState<TextFieldValue>) {
-    TextField(
-        value = state.value,
-        onValueChange = { value ->
-            state.value = value
-        },
-        modifier = Modifier.fillMaxWidth(),
-        textStyle = TextStyle(fontSize = 18.sp),
-        leadingIcon = {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(15.dp)
-                    .size(24.dp),
-            )
-        },
-        trailingIcon = {
-            val hasQuery = state.value.text.isNotEmpty()
-            if (hasQuery) {
-                // clear search
-                IconButton(
-                    onClick = {
-                        state.value = TextFieldValue("")
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.background,
+        modifier = Modifier
+            .height(80.dp)
+            .padding(10.dp),
+        shadowElevation = 10.dp,
+    ) {
+        TextField(
+            value = state.value,
+            onValueChange = { value ->
+                state.value = value
+            },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontSize = 18.sp),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .size(24.dp),
+                )
+            },
+            trailingIcon = {
+                val hasQuery = state.value.text.isNotEmpty()
+                if (hasQuery) {
+                    // clear search
+                    IconButton(
+                        onClick = {
+                            state.value = TextFieldValue("")
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding(15.dp)
+                                .size(36.dp)
+                        )
                     }
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(15.dp)
-                            .size(36.dp)
-                    )
                 }
-            }
-        },
-        singleLine = true,
-        colors = TextFieldDefaults.textFieldColors()
-    )
+            },
+            singleLine = true,
+            colors = TextFieldDefaults.textFieldColors()
+        )
+    }
 }
 
 @Preview(showBackground = true)
